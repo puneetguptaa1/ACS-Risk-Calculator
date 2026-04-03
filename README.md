@@ -17,10 +17,8 @@ Everything else is installed automatically on first run.
 Open Terminal, navigate to this folder, and run:
 
 ```
-./run.sh
+bash run.sh
 ```
-
-Or double-click `run.sh` in Finder (you may need to right-click > Open the first time).
 
 ### Windows
 
