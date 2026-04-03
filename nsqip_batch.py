@@ -460,8 +460,8 @@ def fill_patient_form(page, data: Dict[str, Any], log):
     w = data.get("PatientWeight")
     h_valid = h is not None and str(h).strip() and float(str(h)) != -99
     w_valid = w is not None and str(w).strip() and float(str(w)) != -99
-    h_fill = str(int(float(str(h).replace(",", "")))) if h_valid else ""
-    w_fill = str(int(float(str(w).replace(",", "")))) if w_valid else ""
+    h_fill = str(int(float(str(h).replace(",", "")))) if h_valid and w_valid else ""
+    w_fill = str(int(float(str(w).replace(",", "")))) if w_valid and h_valid else ""
     log.info("  %-28s  raw=%-25s -> %s", "PatientHeight (in)", repr(h), h_fill or "(blank)")
     log.info("  %-28s  raw=%-25s -> %s", "PatientWeight (lb)", repr(w), w_fill or "(blank)")
     page.fill("#PatientHeight", h_fill)
