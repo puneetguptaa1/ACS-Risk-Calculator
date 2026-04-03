@@ -118,8 +118,9 @@ def main() -> None:
         print("Cancelled.")
         sys.exit(0)
 
-    # --- Run ---
+    # --- Run batch script ---
     python = sys.executable
+    json_path = excel_path.parent / json_name
     cmd = [
         python, str(BATCH_SCRIPT),
         "--excel", str(excel_path),
@@ -130,7 +131,34 @@ def main() -> None:
 
     print(f"\nStarting batch processing...\n")
     result = subprocess.run(cmd)
-    sys.exit(result.returncode)
+
+    if result.returncode != 0:
+        print(f"\nBatch script exited with error (code {result.returncode}).")
+        sys.exit(result.returncode)
+
+    # --- Write results back to Excel ---
+    if json_path.is_file():
+        print()
+        print("=" * 60)
+        print("  Writing results back to Excel...")
+        print("=" * 60)
+        print()
+        write_cmd = [
+            python, str(SCRIPT_DIR / "json_to_excel.py"),
+            "--json", str(json_path),
+            "--excel", str(excel_path),
+            "--sheet", sheet_name,
+        ]
+        write_result = subprocess.run(write_cmd)
+        if write_result.returncode == 0:
+            print(f"\nResults written to '{excel_path.name}' sheet '{sheet_name}'.")
+        else:
+            print(f"\nWARNING: Writing to Excel failed (code {write_result.returncode}).")
+            print(f"Results are still saved in: {json_path}")
+    else:
+        print(f"\nNo JSON output found at {json_path} -- nothing to write to Excel.")
+
+    sys.exit(0)
 
 
 if __name__ == "__main__":
